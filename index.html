@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nokia 3310 Snake - Classic Retro Mobile Game</title>
+  <meta name="description" content="Play the authentic classic Nokia 3310 Snake game in your browser with retro monochrome LCD graphics, authentic 8-bit sound effects, and interactive keypad.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background with retro glow and controls panel -->
+  <div class="page-container">
+    <header class="app-header">
+      <div class="logo-badge">NOKIA 3310</div>
+      <h1>SNAKE II</h1>
+      <p class="tagline">Authentic 2000s Mobile Experience</p>
+    </header>
+
+    <main class="main-stage">
+      <!-- Side quick settings / instructions -->
+      <aside class="side-panel left-panel">
+        <div class="panel-card">
+          <h2>Controls</h2>
+          <ul class="control-list">
+            <li><span class="key">2</span> or <span class="key">&uarr;</span> <span>Up</span></li>
+            <li><span class="key">4</span> or <span class="key">&larr;</span> <span>Left</span></li>
+            <li><span class="key">6</span> or <span class="key">&rarr;</span> <span>Right</span></li>
+            <li><span class="key">8</span> or <span class="key">&darr;</span> <span>Down</span></li>
+            <li><span class="key">Navi</span> / <span class="key">Space</span> <span>Start / Pause</span></li>
+            <li><span class="key">C</span> / <span class="key">Esc</span> <span>Back / Menu</span></li>
+          </ul>
+        </div>
+
+        <div class="panel-card shell-selector">
+          <h2>Phone Shell</h2>
+          <div class="shell-buttons">
+            <button class="shell-btn active" data-shell="navy" title="Navy Blue" style="--btn-color: #1a2a44;"></button>
+            <button class="shell-btn" data-shell="silver" title="Cyber Silver" style="--btn-color: #9aa4b0;"></button>
+            <button class="shell-btn" data-shell="yellow" title="Retro Yellow" style="--btn-color: #d69819;"></button>
+            <button class="shell-btn" data-shell="red" title="Ruby Red" style="--btn-color: #8b1e2c;"></button>
+            <button class="shell-btn" data-shell="matrix" title="Matrix Green" style="--btn-color: #173b22;"></button>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h2>LCD Backlight</h2>
+          <div class="lcd-toggles">
+            <button class="theme-btn active" data-lcd="classic">Classic Green</button>
+            <button class="theme-btn" data-lcd="ice">Ice Blue 3315</button>
+            <button class="theme-btn" data-lcd="amber">Amber Glow</button>
+            <button class="theme-btn" data-lcd="mono">True B&amp;W</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- The Nokia Phone Frame -->
+      <div class="phone-wrapper">
+        <div class="phone-body navy" id="phoneBody">
+          <!-- Top Speaker and Branding -->
+          <div class="phone-top">
+            <div class="speaker-grill">
+              <span class="slit"></span>
+              <span class="slit"></span>
+              <span class="slit"></span>
+            </div>
+            <div class="nokia-brand">NOKIA</div>
+          </div>
+
+          <!-- Phone Screen Bezel & LCD -->
+          <div class="screen-bezel">
+            <div class="screen-glass">
+              <div class="glass-glare"></div>
+              
+              <div class="lcd-screen classic" id="lcdScreen">
+                <!-- Status Bar: Signal, Battery, Sound, Mode -->
+                <div class="lcd-status-bar">
+                  <div class="signal-indicator" title="Network Signal">
+                    <span class="bar b1"></span>
+                    <span class="bar b2"></span>
+                    <span class="bar b3"></span>
+                    <span class="bar b4"></span>
+                  </div>
+                  <div class="status-center">
+                    <span id="lcdSoundIndicator" class="sound-icon" title="Sound On/Off">&#128266;</span>
+                    <span id="lcdGameModeText">SNAKE II</span>
+                  </div>
+                  <div class="battery-indicator" title="Battery Level">
+                    <span class="bat-level"></span>
+                    <span class="bat-nub"></span>
+                  </div>
+                </div>
+
+                <!-- Main Game Canvas Area -->
+                <div class="canvas-container">
+                  <canvas id="gameCanvas" width="280" height="190"></canvas>
+                  <div class="lcd-pixel-overlay"></div>
+                </div>
+
+                <!-- Soft Key Labels at Bottom of LCD -->
+                <div class="lcd-softkeys">
+                  <span id="leftSoftLabel">Options</span>
+                  <span id="centerSoftLabel">Select</span>
+                  <span id="rightSoftLabel">Exit</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Physical Controls / Keypad -->
+          <div class="keypad-zone">
+            <!-- Navigation Rocker / Top Function Keys -->
+            <div class="function-keys-row">
+              <button class="phone-btn soft-btn" id="btnLeftSoft" title="Options / Menu">
+                <span class="btn-line"></span>
+              </button>
+
+              <button class="phone-btn navi-btn" id="btnNavi" title="Navi Key (Select / Play)">
+                <span class="navi-inner">
+                  <span class="navi-accent"></span>
+                </span>
+              </button>
+
+              <button class="phone-btn soft-btn c-btn" id="btnRightSoft" title="Clear / Back">
+                <span class="btn-text">C</span>
+              </button>
+            </div>
+
+            <!-- Directional Assist Bar (Integrated for easy mobile touch) -->
+            <div class="quick-arrows-row">
+              <button class="phone-btn arrow-btn" id="btnArrowUp" title="Up">▲</button>
+            </div>
+            <div class="quick-arrows-side">
+              <button class="phone-btn arrow-btn" id="btnArrowLeft" title="Left">◀</button>
+              <button class="phone-btn arrow-btn" id="btnArrowRight" title="Right">▶</button>
+            </div>
+            <div class="quick-arrows-row">
+              <button class="phone-btn arrow-btn" id="btnArrowDown" title="Down">▼</button>
+            </div>
+
+            <!-- Standard 12-Key Nokia Alphanumeric Keypad -->
+            <div class="numpad-grid">
+              <button class="phone-btn num-btn" data-key="1" id="key1">
+                <span class="num">1</span>
+                <span class="alpha">&empty;</span>
+              </button>
+              <button class="phone-btn num-btn dir-key up-key" data-key="2" id="key2" title="Up">
+                <span class="num">2</span>
+                <span class="alpha">abc ▲</span>
+              </button>
+              <button class="phone-btn num-btn" data-key="3" id="key3">
+                <span class="num">3</span>
+                <span class="alpha">def</span>
+              </button>
+
+              <button class="phone-btn num-btn dir-key left-key" data-key="4" id="key4" title="Left">
+                <span class="num">4</span>
+                <span class="alpha">◀ ghi</span>
+              </button>
+              <button class="phone-btn num-btn" data-key="5" id="key5">
+                <span class="num">5</span>
+                <span class="alpha">jkl</span>
+              </button>
+              <button class="phone-btn num-btn dir-key right-key" data-key="6" id="key6" title="Right">
+                <span class="num">6</span>
+                <span class="alpha">mno ▶</span>
+              </button>
+
+              <button class="phone-btn num-btn" data-key="7" id="key7">
+                <span class="num">7</span>
+                <span class="alpha">pqrs</span>
+              </button>
+              <button class="phone-btn num-btn dir-key down-key" data-key="8" id="key8" title="Down">
+                <span class="num">8</span>
+                <span class="alpha">▼ tuv</span>
+              </button>
+              <button class="phone-btn num-btn" data-key="9" id="key9">
+                <span class="num">9</span>
+                <span class="alpha">wxyz</span>
+              </button>
+
+              <button class="phone-btn num-btn" data-key="*" id="keyStar" title="Toggle Sound">
+                <span class="num">*</span>
+                <span class="alpha">&#9834;</span>
+              </button>
+              <button class="phone-btn num-btn" data-key="0" id="key0">
+                <span class="num">0</span>
+                <span class="alpha">_</span>
+              </button>
+              <button class="phone-btn num-btn" data-key="#" id="keyHash" title="Toggle Screen Backlight">
+                <span class="num">#</span>
+                <span class="alpha">&#9788;</span>
+              </button>
+            </div>
+
+            <!-- Nokia Mic Pinhole -->
+            <div class="mic-hole"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: High Scores & Game Stats -->
+      <aside class="side-panel right-panel">
+        <div class="panel-card stats-card">
+          <h2>Game Stats</h2>
+          <div class="stat-row">
+            <span>Score:</span>
+            <span id="liveScore" class="stat-val">0</span>
+          </div>
+          <div class="stat-row">
+            <span>High Score:</span>
+            <span id="liveHighScore" class="stat-val">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Mode:</span>
+            <span id="liveMode" class="stat-val">Classic</span>
+          </div>
+          <div class="stat-row">
+            <span>Speed:</span>
+            <span id="liveSpeed" class="stat-val">5 / 9</span>
+          </div>
+          <div class="stat-row">
+            <span>Apples Eaten:</span>
+            <span id="liveEaten" class="stat-val">0</span>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <h2>Game Options</h2>
+          <div class="option-group">
+            <label for="gameModeSelect">Game Mode:</label>
+            <select id="gameModeSelect" class="retro-select">
+              <option value="classic">Classic (Wall Collision)</option>
+              <option value="wraparound" selected>Snake II (Wrap-around)</option>
+              <option value="labyrinth">Labyrinth (Maze Walls)</option>
+              <option value="box">Box (4 Corner Blocks)</option>
+            </select>
+          </div>
+
+          <div class="option-group">
+            <label for="speedSlider">Snake Speed: <span id="speedValLabel">5</span></label>
+            <input type="range" id="speedSlider" min="1" max="9" value="5" class="retro-slider">
+          </div>
+
+          <div class="option-group">
+            <label class="toggle-label">
+              <input type="checkbox" id="soundToggleCheckbox" checked>
+              <span>8-Bit Sound Effects</span>
+            </label>
+          </div>
+
+          <div class="option-group">
+            <label class="toggle-label">
+              <input type="checkbox" id="bonusInsectCheckbox" checked>
+              <span>Bonus Insects / Bugs</span>
+            </label>
+          </div>
+
+          <button id="btnResetHighScore" class="action-btn danger-btn">Reset High Score</button>
+        </div>
+
+        <div class="panel-card instructions-card">
+          <h2>Nostalgia Secrets</h2>
+          <p>Press <strong>*</strong> on the phone keypad to toggle sound mute.</p>
+          <p>Press <strong>#</strong> to cycle through LCD backlight colors.</p>
+          <p>Catch flashing bonus insects before their timer runs out for massive points!</p>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="app-footer">
+      <p>Crafted with authentic Nokia 3310 aesthetics, Web Audio API synthesis &amp; HTML5 Canvas.</p>
+    </footer>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
